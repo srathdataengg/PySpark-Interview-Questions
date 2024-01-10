@@ -31,6 +31,8 @@ rank_df.show()
 
 # dense rank
 
-dense_rank_df = df.withColumn("denserank",dense_rank().over(Window.partitionBy("id").orderBy("marks")))
+dense_rank_df = df.withColumn("denserank", dense_rank().over(Window.partitionBy("id", "department").orderBy("marks")))
 
 dense_rank_df.show()
+
+
