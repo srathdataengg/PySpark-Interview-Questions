@@ -1,3 +1,7 @@
+"""
+Check if the columns of a dataframe consists of required columns according to BRD.
+Real- Time Data Quality scenario
+"""
 from pyspark.sql import SparkSession
 
 spark = SparkSession.builder.appName("check list of columns").getOrCreate()
