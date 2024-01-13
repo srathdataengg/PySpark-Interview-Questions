@@ -49,7 +49,8 @@ ordersDF.show()
 
 order_items_data_df.show()
 
-result_df = ordersDF.join(order_items_data_df, ordersDF.order_id == order_items_data_df.order_id, "left_outer") \
+result_df = ordersDF.join(order_items_data_df,
+                          ordersDF.order_id == order_items_data_df.order_id, "left_outer") \
     .groupby("customer_id") \
     .agg(sum(when(col("order_status") == "COMPLETE", col("quantity") * col("unit_price"))
              .otherwise(lit(0))).alias("Revenue"))
