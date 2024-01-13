@@ -1,0 +1,11 @@
+policy_id,policy_holder,policy_type,premium_amount,change_date
+1,Alice,Auto,500,2023-01-01
+2,Bob,Home,700,2023-01-02
+3,Alice,Auto,550,2023-01-03
+4,Charlie,Auto,600,2023-01-04
+5,Bob,Auto,520,2023-01-05
+6,Alice,Home,750,2023-01-06
+7,Bob,Auto,530,2023-01-07
+8,Charlie,Home,720,2023-01-08
+9,Alice,Auto,580,2023-01-09
+10,Bob,Home,770,2023-01-10
