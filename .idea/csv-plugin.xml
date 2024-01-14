@@ -17,6 +17,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/payments.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/policies.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/user_data.csv">
           <value>
             <Attribute>
