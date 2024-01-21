@@ -35,7 +35,8 @@ result_df = ads_df.groupby("ad_id"). \
     agg(
     sum(when(ads_df["action"] == "Clicked", 1).otherwise(0)).alias("click_count"),
     sum(when(ads_df["action"] == "Viewed", 1).otherwise(0)).alias("viewed_count")
-).withColumn("ctr", round(col("click_count") / (col("click_count") + col("viewed_count")), 2))\
-    .orderBy("ctr")
+).withColumn("ctr", round(col("click_count") / (col("click_count") + col("viewed_count")), 2))
+
+result_df.orderBy(col("ctr").desc(),col("ad_id").asc())
 
 result_df.show()
