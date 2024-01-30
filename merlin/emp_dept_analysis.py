@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, dayofmonth, reverse, asc, desc, year, max, avg, aggregate, concat, lit, month
+from pyspark.sql.functions import col, dayofmonth, reverse, asc, desc, year, max, min, avg, aggregate, concat, lit, \
+    month, count
 from pyspark.sql import Window
 
 spark = SparkSession.builder.appName("emp_dept analysis").getOrCreate()
@@ -7,11 +8,11 @@ spark = SparkSession.builder.appName("emp_dept analysis").getOrCreate()
 dept = spark.read.csv("/Users/soumyakantarath/Desktop/PySpark-Interview-Questions/datasets/departments.csv",
                       header=True)
 
-dept.show()
+dept.show(truncate=False)
 
 emp = spark.read.csv("/Users/soumyakantarath/Desktop/PySpark-Interview-Questions/datasets/employees.csv", header=True)
 
-emp.show()
+emp.show(truncate=False)
 
 # Select employee’s first name, last name, job_id, and
 # salary whose first name starts with alphabet ‘S’
@@ -77,3 +78,55 @@ avg_salary1.show()
 result = emp.filter((year('hire_date') == 1994) & (month('hire_date') == 8)).select(
     concat('first_name', lit(' '), 'last_name').alias("emp_name"), 'hire_date')
 result.show()
+
+# find the salary range of employees - max salary, min salary and avg salary
+
+stats_df = emp.select(avg(col("salary").alias("avg_salary")), max(col("salary").alias("max_salary")), \
+                      min(col("salary").alias("min_salary")))
+
+stats_df.show()
+
+# get the count of employees hired year wise
+
+emp_year_count_df = emp.groupby(year(col("hire_date")).alias("hire_year")). \
+    agg(count(col("employee_id")).alias("employee_count")). \
+    orderBy(asc("employee_count"))
+
+emp_year_count_df.show()
+
+# find the count of employees department wise
+
+dept_count_df = joined_df.groupby("department_name").agg(count(col("employee_id")).alias("emp_count")) \
+    .orderBy(asc("emp_count"))
+
+dept_count_df.show()
+
+# find count of employees under each manager in descending order.
+
+emp_manager_df = emp.groupby('manager_id').agg(count('employee_id').alias("emp_count"))
+
+emp_manager_df.show()
+
+emp_df = emp.alias("emp_df")
+mgr_df = emp.alias("mgr_df")
+# emp_df.show()
+# mgr_df.show()
+
+# joined_df1 = emp_df.join(mgr_df, emp_df['employee_id'] == mgr_df['manager_id'], "inner")
+joined_df1 = mgr_df.join(emp_df, col("emp_df.manager_id") == col("mgr_df.manager_id"), "inner")
+
+joined_df1.show()
+
+emp_manager_df1 = joined_df1.groupby(concat('mgr_df.first_name', lit(' '), 'mgr_df.last_name').alias('manager')).agg(
+    count(col("emp_df.employee_id")).alias('reportee_count')).orderBy(asc('reportee_count'))
+emp_manager_df1.show()
+
+emp_manager_salary_df = joined_df1.select(concat(col("emp_df.first_name"), lit(" "), col("emp_df.last_name")).alias("employee_name"),
+                                          col("emp_df.salary"),
+                                          concat(col("mgr_df.first_name"),lit(" "),col("mgr_df.last_name")).alias("manager_name"),
+                                          col("mgr_df.salary"))
+emp_manager_salary_df.show(30)
+
+emp_high_sal_df = emp.orderBy(desc("salary"))
+#emp_high_sal_df1 = emp.rank("salary").over(Window.orderBy("salary"))
+emp_high_sal_df.show()
